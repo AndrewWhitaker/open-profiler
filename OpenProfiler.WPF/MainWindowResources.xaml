@@ -1,0 +1,72 @@
+﻿<ResourceDictionary 
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vw="clr-namespace:OpenProfiler.WPF.Views"
+    xmlns:vm="clr-namespace:OpenProfiler.WPF.ViewModels">
+
+    <DataTemplate x:Key="SessionListTemplate">
+        <ListView
+            ItemsSource="{Binding Sessions}"
+            Grid.Column="0"
+            HorizontalAlignment="Stretch"
+            SelectedItem="{Binding SelectedSession}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Session " />
+                        <TextBlock Text="{Binding Id}" />
+                    </StackPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </DataTemplate>
+    
+    <DataTemplate x:Key="SelectedSessionTemplate">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition Height="Auto" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <ListView
+                ItemsSource="{Binding SessionEvents}"
+                SelectedItem="{Binding SelectedSessionEvent}"
+                HorizontalAlignment="Stretch"
+                Grid.Row="0">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="TimeStamp" Width="Auto">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding TimeStamp}"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="SQL" Width="Auto">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock 
+                                        HorizontalAlignment="Stretch" 
+                                        Width="Auto" 
+                                        Text="{Binding MessagePreview}" 
+                                        TextTrimming="CharacterEllipsis" 
+                                        TextWrapping="NoWrap" />
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+            <GridSplitter 
+                Grid.Row="1"
+                Height="5"
+                ResizeBehavior="PreviousAndNext"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Bottom"  />
+            <ScrollViewer Grid.Row="2">
+                <TextBox Text="{Binding Path=SelectedSessionEvent.Message}" />
+            </ScrollViewer>       
+        </Grid>
+    </DataTemplate>
+    
+</ResourceDictionary>

@@ -1,0 +1,33 @@
+﻿<Window x:Class="OpenProfiler.WPF.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:my="clr-namespace:OpenProfiler.WPF"
+        xmlns:vm="clr-namespace:OpenProfiler.WPF.ViewModels"
+        Title="OpenProfiler" 
+        Height="768" 
+        Width="1024">
+    <Window.Resources>
+        <ResourceDictionary Source="MainWindowResources.xaml" />
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="3*" />
+        </Grid.ColumnDefinitions>
+        <ContentControl
+            Grid.Column="0"
+            Content="{Binding Path=.}"
+            ContentTemplate="{StaticResource SessionListTemplate}" />
+        <GridSplitter 
+            Grid.Column="1"
+            HorizontalAlignment="Right" 
+            VerticalAlignment="Stretch"
+            Width="5" 
+            ResizeBehavior="PreviousAndNext" />
+        <ContentControl
+            Grid.Column="2"
+            Content="{Binding Path=SelectedSession}"
+            ContentTemplate="{StaticResource SelectedSessionTemplate}"/>
+    </Grid>
+</Window>
