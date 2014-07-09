@@ -11,7 +11,7 @@
 
     public class Bootstrapper
     {
-        private const int RemotePort = 325;
+        private const int RemotePort = 331;
         
         private static readonly IPAddress RemoteAddress = IPAddress.Parse("127.0.0.1");
 
@@ -36,6 +36,7 @@
             appender.Layout = layout;
             appender.ActivateOptions();
 
+            logger.Level = Level.DebugLevel(); 
             logger.AddAppender(appender);
 
             hierarchy.Configured = true;

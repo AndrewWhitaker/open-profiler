@@ -28,7 +28,7 @@
                 SocketOptionName.ReuseAddress,
                 true);
 
-            this._udpClient.Client.Bind(new IPEndPoint(IPAddress.Any, 325));
+            this._udpClient.Client.Bind(new IPEndPoint(IPAddress.Any, 331));
         }
 
         public void Listen()

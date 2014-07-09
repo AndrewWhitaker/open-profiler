@@ -14,5 +14,17 @@
         {
             this.InvokePublicInstanceMethod("AddAppender", appender.UnderlyingObject);
         }
+
+        public object Level
+        {
+            get
+            {
+                return this.InvokePublicGetter("Level");
+            }
+            set
+            {
+                this.InvokePublicSetter("Level", value);
+            }
+        }
     }
 }
