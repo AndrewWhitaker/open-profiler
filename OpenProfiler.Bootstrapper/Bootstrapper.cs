@@ -11,23 +11,31 @@
 
     public class Bootstrapper
     {
+        private const string LocalhostAddress = "127.0.0.1";
+        private const string NHibernateDLLName = "NHibernate.dll";
+        private const string Log4NetDllName = "log4net.dll";
+        private const string NHibernateSQLLoggerName = "NHibernate.SQL";
+        private const string OpenProfilerAppenderResourceName = "OpenProfiler.Bootstrapper.OpenProfilerAppender.cs";
+        private const string OpenProfilerAppenderTypeName = "OpenProfiler.Bootstrapper.OpenProfilerAppender";
+
         private const int RemotePort = 329;
-        private static readonly IPAddress RemoteAddress = IPAddress.Parse("127.0.0.1");
+
+        private static readonly IPAddress RemoteAddress = IPAddress.Parse(LocalhostAddress);
 
         private static Assembly nHibernateAssembly;
         private static Assembly log4netAssembly;
 
         public static void Initialize()
         {
-            nHibernateAssembly = FindAssembly("NHibernate.dll");
-            log4netAssembly = FindAssembly("log4net.dll");
+            nHibernateAssembly = FindAssembly(NHibernateDLLName);
+            log4netAssembly = FindAssembly(Log4NetDllName);
 
             if (nHibernateAssembly != null && log4netAssembly != null)
             {
                 Loader.Initialize(log4netAssembly);
 
                 Hierarchy hierarchy = LogManager.GetRepository();
-                Logger logger = hierarchy.GetLogger("NHibernate.SQL");
+                Logger logger = hierarchy.GetLogger(NHibernateSQLLoggerName);
 
                 var openProfilerAppender = BuildAppender();
 
@@ -58,7 +66,7 @@
             parameters.GenerateExecutable = false;
             parameters.GenerateInMemory = true;
 
-            string resourceText = getResourceText("OpenProfiler.Bootstrapper.OpenProfilerAppender.cs");
+            string resourceText = getResourceText(OpenProfilerAppenderResourceName);
 
             CompilerResults results = CodeDomProvider.CreateProvider("CSharp")
                 .CompileAssemblyFromSource(parameters, resourceText);
@@ -68,7 +76,7 @@
             if (results.Errors.Count == 0)
             {
                 Assembly compiledAssembly = results.CompiledAssembly;
-                Type appenderType = compiledAssembly.GetType("OpenProfiler.Bootstrapper.OpenProfilerAppender");
+                Type appenderType = compiledAssembly.GetType(OpenProfilerAppenderTypeName);
 
                 result = Activator.CreateInstance(appenderType);
             }

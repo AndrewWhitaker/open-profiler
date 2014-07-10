@@ -3,7 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:vw="clr-namespace:OpenProfiler.WPF.Views"
     xmlns:vm="clr-namespace:OpenProfiler.WPF.ViewModels">
-
+    
     <DataTemplate x:Key="SessionListTemplate">
         <ListView
             ItemsSource="{Binding Sessions}"
@@ -13,13 +13,19 @@
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Session " />
-                        <TextBlock Text="{Binding Id}" />
+                        <TextBlock Text="{Binding Path=Number, StringFormat='Session {0}'}" />
                     </StackPanel>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
     </DataTemplate>
+    
+    <Style TargetType="DataGrid" x:Key="SessionEventsGrid">
+        <Setter Property="GridLinesVisibility" Value="Horizontal" />
+        <Setter Property="HorizontalGridLinesBrush" Value="LightGray" />
+        <Setter Property="Background" Value="White" />
+        <Setter Property="AlternatingRowBackground" Value="AliceBlue" />
+    </Style>
     
     <DataTemplate x:Key="SelectedSessionTemplate">
         <Grid>
@@ -28,45 +34,46 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition />
             </Grid.RowDefinitions>
-            <ListView
+            <DataGrid
+                Style="{StaticResource SessionEventsGrid}"
+                Grid.Row="0"
                 ItemsSource="{Binding SessionEvents}"
                 SelectedItem="{Binding SelectedSessionEvent}"
-                HorizontalAlignment="Stretch"
-                Grid.Row="0">
-                <ListView.View>
-                    <GridView>
-                        <GridViewColumn Header="TimeStamp" Width="Auto">
-                            <GridViewColumn.CellTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding TimeStamp}"/>
-                                </DataTemplate>
-                            </GridViewColumn.CellTemplate>
-                        </GridViewColumn>
-                        <GridViewColumn Header="SQL" Width="Auto">
-                            <GridViewColumn.CellTemplate>
-                                <DataTemplate>
-                                    <TextBlock 
-                                        HorizontalAlignment="Stretch" 
-                                        Width="Auto" 
-                                        Text="{Binding MessagePreview}" 
-                                        TextTrimming="CharacterEllipsis" 
-                                        TextWrapping="NoWrap" />
-                                </DataTemplate>
-                            </GridViewColumn.CellTemplate>
-                        </GridViewColumn>
-                    </GridView>
-                </ListView.View>
-            </ListView>
-            <GridSplitter 
+                SelectionMode="Single"
+                IsReadOnly="True"
+                AutoGenerateColumns="False"
+                SelectionUnit="FullRow">
+                <DataGrid.Columns>
+                    <DataGridTextColumn
+                        Header="TimeStamp"
+                        Binding="{Binding TimeStamp}" />
+                    <DataGridTextColumn
+                        Width="*"
+                        Header="SQL"
+                        Binding="{Binding Message}">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style 
+                                TargetType="{x:Type TextBlock}"
+                                BasedOn="{StaticResource {x:Type TextBlock}}">
+                                <Setter Property="TextWrapping" Value="NoWrap"/>
+                                <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+            <GridSplitter
                 Grid.Row="1"
                 Height="5"
                 ResizeBehavior="PreviousAndNext"
                 HorizontalAlignment="Stretch"
-                VerticalAlignment="Bottom"  />
+                VerticalAlignment="Bottom" />
             <ScrollViewer Grid.Row="2">
                 <TextBox Text="{Binding Path=SelectedSessionEvent.Message}" />
-            </ScrollViewer>       
+            </ScrollViewer>
         </Grid>
     </DataTemplate>
+
+
     
 </ResourceDictionary>
