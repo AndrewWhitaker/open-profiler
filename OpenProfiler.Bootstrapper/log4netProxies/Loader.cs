@@ -17,7 +17,7 @@
 
             if (File.Exists(log4NetPath))
             {
-                Assembly = Assembly.LoadFile(log4NetPath);
+                Assembly = Assembly.LoadFrom(log4NetPath);
             }
         }
 
