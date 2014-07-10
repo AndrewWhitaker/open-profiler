@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using System.Text;
 
-    public class PropertiesDictionary : Log4NetProxy
+    internal class PropertiesDictionary : Log4NetProxy
     {
         public PropertiesDictionary(object underlyingObject) 
             : base(underlyingObject)

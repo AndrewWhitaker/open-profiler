@@ -5,7 +5,7 @@
     using System.Reflection;
     using System.Text;
 
-    public abstract class Log4NetProxy
+    internal abstract class Log4NetProxy
     {
         private static BindingFlags PublicInstanceMethodFlags =
             BindingFlags.Public | BindingFlags.Instance | BindingFlags.InvokeMethod;

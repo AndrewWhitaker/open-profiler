@@ -6,7 +6,7 @@
     using System.Reflection;
     using System.Text;
 
-    public static class Loader
+    internal static class Loader
     {
         private const string Log4NetDllName = "log4net.dll";
         private static Assembly Assembly;

@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using System.Text;
 
-    public class Logger : Log4NetProxy
+    internal class Logger : Log4NetProxy
     {
         public Logger(object underlyingObject) : base(underlyingObject)
         {

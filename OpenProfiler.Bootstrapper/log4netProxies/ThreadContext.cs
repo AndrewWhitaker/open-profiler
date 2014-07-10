@@ -1,8 +1,9 @@
-﻿using System;
-using System.Reflection;
-namespace OpenProfiler.Bootstrapper.log4netProxies
+﻿namespace OpenProfiler.Bootstrapper.log4netProxies
 {
-    public class ThreadContext
+    using System;
+    using System.Reflection;
+
+    internal class ThreadContext
     {
         public static PropertiesDictionary Properties
         {

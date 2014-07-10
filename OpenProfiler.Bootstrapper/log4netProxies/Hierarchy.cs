@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using System.Text;
 
-    public class Hierarchy : Log4NetProxy
+    internal class Hierarchy : Log4NetProxy
     {
         public Hierarchy(object underlyingObject) : base(underlyingObject)
         {

@@ -5,7 +5,7 @@
     using System.Reflection;
     using System.Text;
     
-    public class LogManager
+    internal class LogManager
     {
         public static Hierarchy GetRepository()
         {

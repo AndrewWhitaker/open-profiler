@@ -5,7 +5,7 @@
     using System.Net;
     using System.Text;
 
-    public class UdpAppender : Log4NetProxy
+    internal class UdpAppender : Log4NetProxy
     {
         public UdpAppender(object underlyingObject)
             : base(underlyingObject)

@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using System.Text;
 
-    public class XmlLayout : Log4NetProxy
+    internal class XmlLayout : Log4NetProxy
     {
         public XmlLayout(object underlyingObject) : base(underlyingObject)
         {
