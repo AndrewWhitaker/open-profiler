@@ -11,47 +11,54 @@
 
     public class Bootstrapper
     {
-        private const int RemotePort = 331;
-        
+        private const int RemotePort = 329;
         private static readonly IPAddress RemoteAddress = IPAddress.Parse("127.0.0.1");
+
+        private static Assembly nHibernateAssembly;
+        private static Assembly log4netAssembly;
 
         public static void Initialize()
         {
-            Loader.Initialize();
+            nHibernateAssembly = FindAssembly("NHibernate.dll");
+            log4netAssembly = FindAssembly("log4net.dll");
 
-            ThreadContext.Properties["sessionId"] = BuildSessionLogger();
+            if (nHibernateAssembly != null && log4netAssembly != null)
+            {
+                Loader.Initialize(log4netAssembly);
 
-            Hierarchy hierarchy = LogManager.GetRepository();
-            Logger logger = hierarchy.GetLogger("NHibernate.SQL");
+                Hierarchy hierarchy = LogManager.GetRepository();
+                Logger logger = hierarchy.GetLogger("NHibernate.SQL");
 
-            UdpAppender appender = new UdpAppender();
-            appender.Encoding = Encoding.UTF8;
-            appender.RemoteAddress = RemoteAddress;
-            appender.RemotePort = RemotePort;
+                var openProfilerAppender = BuildAppender();
 
-            XmlLayout layout = new XmlLayout();
+                UdpAppender appender = new UdpAppender(openProfilerAppender);
+                appender.Encoding = Encoding.UTF8;
+                appender.RemoteAddress = RemoteAddress;
+                appender.RemotePort = RemotePort;
 
-            layout.LocationInfo = true;
+                appender.Layout = new XmlLayout();
+                appender.ActivateOptions();
 
-            appender.Layout = layout;
-            appender.ActivateOptions();
+                logger.Level = Level.DebugLevel();
+                logger.AddAppender(appender);
 
-            logger.Level = Level.DebugLevel(); 
-            logger.AddAppender(appender);
-
-            hierarchy.Configured = true;
-            hierarchy.RaiseConfigurationChanged(EventArgs.Empty);
+                hierarchy.Configured = true;
+                hierarchy.RaiseConfigurationChanged(EventArgs.Empty);
+            }
         }
 
-        private static object BuildSessionLogger()
+        private static object BuildAppender()
         {
+            string nHibernatePath = nHibernateAssembly.Location;
+            string log4netPath = log4netAssembly.Location;
+
             var parameters = new CompilerParameters(
-                new[] { "NHibernate.dll" });
+                new[] { nHibernatePath, log4netPath });
 
             parameters.GenerateExecutable = false;
             parameters.GenerateInMemory = true;
 
-            string resourceText = getResourceText("SessionIdCapturer.cs");
+            string resourceText = getResourceText("OpenProfiler.Bootstrapper.OpenProfilerAppender.cs");
 
             CompilerResults results = CodeDomProvider.CreateProvider("CSharp")
                 .CompileAssemblyFromSource(parameters, resourceText);
@@ -61,18 +68,30 @@
             if (results.Errors.Count == 0)
             {
                 Assembly compiledAssembly = results.CompiledAssembly;
-                Type sessionIdCapturerType = compiledAssembly.GetType("OpenProfiler.Bootstrapper.SessionIdCapturer");
+                Type appenderType = compiledAssembly.GetType("OpenProfiler.Bootstrapper.OpenProfilerAppender");
 
-                result = Activator.CreateInstance(sessionIdCapturerType);
+                result = Activator.CreateInstance(appenderType);
             }
 
             return result;
         }
 
+        private static Assembly FindAssembly(string dllName)
+        {
+            string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            string relativeSearchPath = AppDomain.CurrentDomain.RelativeSearchPath;
+            string binPath = relativeSearchPath == null ? baseDirectory : Path.Combine(baseDirectory, relativeSearchPath);
+            string path = binPath == null ? dllName : Path.Combine(binPath, dllName);
+
+            return File.Exists(path) ?
+                Assembly.LoadFrom(path) :
+                null;
+        }
+
         private static string getResourceText(string fileName)
         {
             Stream stream = Assembly.GetExecutingAssembly()
-                .GetManifestResourceStream("OpenProfiler.Bootstrapper.SessionIdCapturer.cs");
+                .GetManifestResourceStream(fileName);
 
             string result = null;
 

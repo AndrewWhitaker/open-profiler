@@ -6,6 +6,7 @@
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
+    using System.Windows.Threading;
     using OpenProfiler.WPF.DataAccess;
     using OpenProfiler.WPF.Models;
 
@@ -43,8 +44,11 @@
         {
             if (this.Id == args.SessionEvent.SessionId)
             {
-                this.SessionEvents.Add(
-                    new SessionEventViewModel(args.SessionEvent.TimeStamp, args.SessionEvent.Message));
+                App.Current.Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        this.SessionEvents.Add(
+                            new SessionEventViewModel(args.SessionEvent.TimeStamp, args.SessionEvent.Message));
+                    }), DispatcherPriority.Background);
             }
         }
 
