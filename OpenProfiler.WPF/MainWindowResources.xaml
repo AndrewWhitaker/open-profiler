@@ -50,7 +50,7 @@
                     <DataGridTextColumn
                         Width="*"
                         Header="SQL"
-                        Binding="{Binding Message}">
+                        Binding="{Binding MessagePreview}">
                         <DataGridTextColumn.ElementStyle>
                             <Style 
                                 TargetType="{x:Type TextBlock}"
