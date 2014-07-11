@@ -8,17 +8,11 @@
 
     internal static class Loader
     {
-        private const string Log4NetDllName = "log4net.dll";
         private static Assembly Assembly;
 
-        public static void Initialize()
+        public static void Initialize(Assembly log4netAssembly)
         {
-            string log4NetPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Log4NetDllName);
-
-            if (File.Exists(log4NetPath))
-            {
-                Assembly = Assembly.LoadFrom(log4NetPath);
-            }
+            Assembly = log4netAssembly;
         }
 
         public static Type GetType(string typeName)
