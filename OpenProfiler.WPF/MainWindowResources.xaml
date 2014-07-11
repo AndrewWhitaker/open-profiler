@@ -42,6 +42,8 @@
                 SelectionMode="Single"
                 IsReadOnly="True"
                 AutoGenerateColumns="False"
+                CanUserResizeRows="False"
+                HeadersVisibility="Column"
                 SelectionUnit="FullRow">
                 <DataGrid.Columns>
                     <DataGridTextColumn
