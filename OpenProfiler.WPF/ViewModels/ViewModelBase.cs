@@ -13,7 +13,7 @@
 
         protected void NotifyPropertyChanged(string propertyName)
         {
-            PropertyChangedEventHandler handler = PropertyChanged;
+            PropertyChangedEventHandler handler = this.PropertyChanged;
 
             if (handler != null)
             {

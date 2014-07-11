@@ -1,5 +1,4 @@
-﻿
-namespace OpenProfiler.WPF.ViewModels
+﻿namespace OpenProfiler.WPF.ViewModels
 {
     using System;
     using System.Collections.Generic;

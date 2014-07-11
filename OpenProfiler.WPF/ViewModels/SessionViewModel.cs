@@ -12,17 +12,17 @@
 
     public class SessionViewModel : ViewModelBase
     {
-        private readonly NHibernateLogDataProvider _provider;
-        private SessionEventViewModel _selectedSessionEvent;
-        private static int NextNumber = 1;
+        private static int nextNumber = 1;
+        private readonly NHibernateLogDataProvider provider;
+        private SessionEventViewModel selectedSessionEvent;
 
         public SessionViewModel(Guid id, NHibernateLogDataProvider provider)
         {
             this.Id = id;
-            this._provider = provider;
+            this.provider = provider;
 
-            this._provider.SessionEventAdded += _newSessionEventAdded;
-            this.Number = NextNumber++;
+            this.provider.SessionEventAdded += this.NewSessionEventAdded;
+            this.Number = nextNumber++;
 
             this.SessionEvents = new ObservableCollection<SessionEventViewModel>();
         }
@@ -31,11 +31,12 @@
         { 
             get
             {
-                return this._selectedSessionEvent;
+                return this.selectedSessionEvent;
             }
+
             set
             {
-                this._selectedSessionEvent = value;
+                this.selectedSessionEvent = value;
                 this.NotifyPropertyChanged("SelectedSessionEvent");
             }
         }
@@ -44,18 +45,20 @@
 
         public int Number { get; private set; }
 
-        public void _newSessionEventAdded(object sender, SessionEventAddedEventArgs args)
+        public ObservableCollection<SessionEventViewModel> SessionEvents { get; private set; }
+
+        private void NewSessionEventAdded(object sender, SessionEventAddedEventArgs args)
         {
             if (this.Id == args.SessionEvent.SessionId)
             {
-                App.Current.Dispatcher.BeginInvoke(new Action(() =>
+                App.Current.Dispatcher.BeginInvoke(
+                    new Action(() =>
                     {
                         this.SessionEvents.Add(
                             new SessionEventViewModel(args.SessionEvent.TimeStamp, args.SessionEvent.Message));
-                    }), DispatcherPriority.Background);
+                    }), 
+                    DispatcherPriority.Background);
             }
         }
-
-        public ObservableCollection<SessionEventViewModel> SessionEvents { get; private set; }
     }
 }
