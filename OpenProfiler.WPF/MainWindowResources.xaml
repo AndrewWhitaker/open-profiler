@@ -20,6 +20,7 @@
         </ListView>
     </DataTemplate>
     
+    
     <Style TargetType="DataGrid" x:Key="SessionEventsGrid">
         <Setter Property="GridLinesVisibility" Value="Horizontal" />
         <Setter Property="HorizontalGridLinesBrush" Value="LightGray" />
@@ -71,7 +72,7 @@
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Bottom" />
             <ScrollViewer Grid.Row="2">
-                <TextBox Text="{Binding Path=SelectedSessionEvent.Message}" />
+                <TextBox Text="{Binding Path=SelectedSessionEvent.FormattedSql, Mode=OneWay}" />
             </ScrollViewer>
         </Grid>
     </DataTemplate>
