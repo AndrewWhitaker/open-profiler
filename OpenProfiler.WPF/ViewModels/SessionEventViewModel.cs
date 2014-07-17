@@ -2,6 +2,7 @@
 {
     using System;
     using System.Text.RegularExpressions;
+    using OpenProfiler.WPF.Utils;
     using SqlFormatter;
 
     public class SessionEventViewModel : ViewModelBase
@@ -23,7 +24,7 @@
             {
                 if (this.formatted == null)
                 {
-                    this.formatted = SqlFormatter.Format(this.message).Trim();
+                    this.formatted = SqlStringUtils.Format(this.message);
                 }
 
                 return this.formatted;
