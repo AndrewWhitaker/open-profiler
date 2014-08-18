@@ -2,13 +2,14 @@
 {
     using System;
     using System.Text.RegularExpressions;
+    using ICSharpCode.AvalonEdit.Document;
     using OpenProfiler.WPF.Utils;
     using SqlFormatter;
 
     public class SessionEventViewModel : ViewModelBase
     {
         private string message;
-        private string formatted;
+        private TextDocument textDocument;
 
         public SessionEventViewModel(DateTime timeStamp, string message)
         {
@@ -18,16 +19,17 @@
 
         public DateTime TimeStamp { get; private set; }
 
-        public string FormattedSql
+        public TextDocument FormattedSqlDocument
         {
             get
             {
-                if (this.formatted == null)
+                if (this.textDocument == null)
                 {
-                    this.formatted = SqlStringUtils.Format(this.message);
+                    string formatted = SqlStringUtils.Format(this.message);
+                    this.textDocument = new TextDocument(formatted);
                 }
 
-                return this.formatted;
+                return this.textDocument;
             }
         }
 

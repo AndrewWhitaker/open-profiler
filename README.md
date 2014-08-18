@@ -21,3 +21,7 @@ This profiler has not undergone any sort of performance testing. DO NOT use this
 ## Limitations
 
 [log4net](http://logging.apache.org/log4net/) is *required* to use this. Hopefully this dependency will be removed soon.
+
+## Dependencies:
+
+* [AvalonEdit](http://avalonedit.net/)

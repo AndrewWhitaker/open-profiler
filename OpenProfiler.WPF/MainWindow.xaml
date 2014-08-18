@@ -25,9 +25,61 @@
             VerticalAlignment="Stretch"
             Width="5" 
             ResizeBehavior="PreviousAndNext" />
-        <ContentControl
-            Grid.Column="2"
-            Content="{Binding Path=SelectedSession}"
-            ContentTemplate="{StaticResource SelectedSessionTemplate}"/>
+
+        <Grid 
+            Grid.Column="2" 
+            DataContext="{Binding Path=SelectedSession}">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition Height="Auto" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <DataGrid
+                Style="{StaticResource SessionEventsGrid}"
+                Grid.Row="0"
+                ItemsSource="{Binding SessionEvents}"
+                SelectedItem="{Binding SelectedSessionEvent}"
+                SelectionMode="Single"
+                IsReadOnly="True"
+                AutoGenerateColumns="False"
+                CanUserResizeRows="False"
+                HeadersVisibility="Column"
+                SelectionUnit="FullRow">
+                <DataGrid.Columns>
+                    <DataGridTextColumn
+                        Header="TimeStamp"
+                        Binding="{Binding TimeStamp}" />
+                    <DataGridTextColumn
+                        Width="*"
+                        Header="SQL"
+                        Binding="{Binding MessagePreview}">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style 
+                                TargetType="{x:Type TextBlock}"
+                                BasedOn="{StaticResource {x:Type TextBlock}}">
+                                <Setter Property="TextWrapping" Value="NoWrap"/>
+                                <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+            <GridSplitter
+                Grid.Row="1"
+                Height="5"
+                ResizeBehavior="PreviousAndNext"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Bottom" />
+            <avalonEdit:TextEditor
+                    xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
+                    Grid.Row="2"
+                    Name="textEditor"
+                    FontFamily="Consolas"
+                    ShowLineNumbers="True"
+                    Document="{Binding Path=SelectedSessionEvent.FormattedSqlDocument}"
+                    IsReadOnly="True"
+                    FontSize="10pt"/>
+        </Grid>
+
     </Grid>
 </Window>

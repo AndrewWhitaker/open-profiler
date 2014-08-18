@@ -7,6 +7,8 @@
     using System.Linq;
     using System.Threading.Tasks;
     using System.Windows;
+    using ICSharpCode.AvalonEdit;
+    using ICSharpCode.AvalonEdit.Highlighting.Xshd;
     using OpenProfiler.WPF.ViewModels;
 
     public partial class App : Application
