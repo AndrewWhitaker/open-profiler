@@ -12,32 +12,29 @@
     public class Bootstrapper
     {
         private const string LocalhostAddress = "127.0.0.1";
-        private const string NHibernateDLLName = "NHibernate.dll";
+        private const string NHibernateDllName = "NHibernate.dll";
         private const string Log4NetDllName = "log4net.dll";
         private const string NHibernateSQLLoggerName = "NHibernate.SQL";
-        private const string OpenProfilerAppenderResourceName = "OpenProfiler.Bootstrapper.OpenProfilerAppender.cs";
-        private const string OpenProfilerAppenderTypeName = "OpenProfiler.Bootstrapper.OpenProfilerAppender";
 
         private const int RemotePort = 329;
 
         private static readonly IPAddress RemoteAddress = IPAddress.Parse(LocalhostAddress);
 
-        private static Assembly nHibernateAssembly;
-        private static Assembly log4netAssembly;
+        private static Assembly nHibernateAssembly = FindAssembly(NHibernateDllName);
+        private static Assembly log4netAssembly = FindAssembly(Log4NetDllName);
 
         public static void Initialize()
         {
-            nHibernateAssembly = FindAssembly(NHibernateDLLName);
-            log4netAssembly = FindAssembly(Log4NetDllName);
 
             if (nHibernateAssembly != null && log4netAssembly != null)
             {
+                var appenderBuilder = new AppenderBuilder(nHibernateAssembly, log4netAssembly);
+                var openProfilerAppender = appenderBuilder.BuildAppender();
+
                 Loader.Initialize(log4netAssembly);
 
                 Hierarchy hierarchy = LogManager.GetRepository();
                 Logger logger = hierarchy.GetLogger(NHibernateSQLLoggerName);
-
-                var openProfilerAppender = BuildAppender();
 
                 UdpAppender appender = new UdpAppender(openProfilerAppender);
                 appender.Encoding = Encoding.UTF8;
@@ -55,35 +52,6 @@
             }
         }
 
-        private static object BuildAppender()
-        {
-            string nHibernatePath = nHibernateAssembly.Location;
-            string log4netPath = log4netAssembly.Location;
-
-            var parameters = new CompilerParameters(
-                new[] { nHibernatePath, log4netPath });
-
-            parameters.GenerateExecutable = false;
-            parameters.GenerateInMemory = true;
-
-            string resourceText = getResourceText(OpenProfilerAppenderResourceName);
-
-            CompilerResults results = CodeDomProvider.CreateProvider("CSharp")
-                .CompileAssemblyFromSource(parameters, resourceText);
-
-            object result = null;
-
-            if (results.Errors.Count == 0)
-            {
-                Assembly compiledAssembly = results.CompiledAssembly;
-                Type appenderType = compiledAssembly.GetType(OpenProfilerAppenderTypeName);
-
-                result = Activator.CreateInstance(appenderType);
-            }
-
-            return result;
-        }
-
         private static Assembly FindAssembly(string dllName)
         {
             string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
@@ -91,27 +59,7 @@
             string binPath = relativeSearchPath == null ? baseDirectory : Path.Combine(baseDirectory, relativeSearchPath);
             string path = binPath == null ? dllName : Path.Combine(binPath, dllName);
 
-            return File.Exists(path) ?
-                Assembly.LoadFrom(path) :
-                null;
-        }
-
-        private static string getResourceText(string fileName)
-        {
-            Stream stream = Assembly.GetExecutingAssembly()
-                .GetManifestResourceStream(fileName);
-
-            string result = null;
-
-            using (stream)
-            {
-                byte[] contents = new byte[stream.Length];
-                stream.Read(contents, 0, (int)stream.Length);
-
-                result = Encoding.UTF8.GetString(contents);
-            }
-
-            return result;
+            return File.Exists(path) ? Assembly.LoadFrom(path) : null;
         }
     }
 }
