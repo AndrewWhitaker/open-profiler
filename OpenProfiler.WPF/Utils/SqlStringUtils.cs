@@ -11,7 +11,7 @@
 
     public class SqlStringUtils
     {
-        private static Regex variableRegex = new Regex(@"(@p\d+)\s=\s(.+?)\s\[Type:\s(.+?)\s\(\d+\)\]");
+        private static Regex variableRegex = new Regex(@"((?:@|\?)p\d+)\s=\s(.+?)\s\[Type:\s(.+?)\s\(\d+\)\]");
         private static Dictionary<DbType, Type> typeMap = new Dictionary<DbType, Type>
         {
             { DbType.AnsiString, typeof(string) },
